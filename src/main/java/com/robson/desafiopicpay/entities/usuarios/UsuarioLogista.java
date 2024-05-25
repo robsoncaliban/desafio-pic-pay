@@ -2,6 +2,10 @@ package com.robson.desafiopicpay.entities.usuarios;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
+import com.robson.desafiopicpay.dtos.request.UsuarioLogistaRequestDTO;
+import com.robson.desafiopicpay.entities.Transacao;
+import com.robson.desafiopicpay.services.exceptions.TransactionForbiddenException;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -13,15 +17,25 @@ public class UsuarioLogista extends Usuario {
     @NotBlank
     @CNPJ(message = "CNPJ inválido")
     private String cnpj;
-
+    
     
     public UsuarioLogista() {
     }
 
-    public UsuarioLogista(@Email(message = "email inválido") String email, String senha, String nomeCompleto,
-            @CNPJ(message = "CNPJ inválido") String cnpj) {
-        super(email, senha, nomeCompleto);
-        this.cnpj = cnpj;
+    public UsuarioLogista(UsuarioLogistaRequestDTO dto) {
+        super(dto.email(), dto.senha(), dto.nomeCompleto(), dto.saldo());
+        this.cnpj = dto.cnpj();
+    }
+
+
+    @Override
+    public Transacao efetuarTransacao(double valor, Usuario usuario) {
+        throw new TransactionForbiddenException(getId());
+    }
+
+    @Override
+    public Transacao cancelarUltimaTransacao() {
+        throw new TransactionForbiddenException(getId());
     }
 
     public String getCNPJ() {
