@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.robson.desafiopicpay.dtos.UsuarioDTO;
-import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequest;
+import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
 import com.robson.desafiopicpay.entities.Transacao;
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.repositories.UsuarioRepository;
@@ -58,7 +58,7 @@ public class UsuarioService{
         repository.delete(usuario);
     }
 
-    public UsuarioDTO updateById(Long id, UsuarioUpdateRequest usuarioUpdate){
+    public UsuarioDTO updateById(Long id, UsuarioUpdateRequestDTO usuarioUpdate){
         Usuario usuario = findById(id).usuario();
         mapper.updateUsuarioFromDto(usuarioUpdate, usuario);
         return new UsuarioDTO(repository.save(usuario));
