@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.robson.desafiopicpay.dtos.UsuarioDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioLogistaRequestDTO;
+import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.entities.usuarios.UsuarioLogista;
 import com.robson.desafiopicpay.repositories.UsuarioLogistaRepository;
-import com.robson.desafiopicpay.services.chain.TratadorCadastro;
-import com.robson.desafiopicpay.services.chain.TratadorCnpj;
-import com.robson.desafiopicpay.services.chain.TratadorEmail;
+import com.robson.desafiopicpay.services.chaincadastro.TratadorCadastro;
+import com.robson.desafiopicpay.services.chaincadastro.TratadorCnpj;
+import com.robson.desafiopicpay.services.chaincadastro.TratadorEmail;
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
 @Service
@@ -25,31 +25,34 @@ public class UsuarioLogistaService {
         this.usuarioService = usuarioService;
     }
 
-    public List<UsuarioDTO> findAll(){
-        List<UsuarioLogista> listaDeUsuarios = repository.findAll();
-        List<UsuarioDTO> response = new ArrayList<>();
-        for (UsuarioLogista usuario : listaDeUsuarios) {
-            UsuarioDTO dto = new UsuarioDTO(usuario);
-            response.add(dto);
-        }
-        return response;
+    public List<UsuarioLogista> findAll(){
+        List<UsuarioLogista> logistas = repository.findAll();
+        return logistas;
     }
 
-    public UsuarioDTO findById(Long id){
+    public UsuarioLogista findById(Long id){
         Optional<UsuarioLogista> usuario = repository.findById(id);
         if(usuario.isPresent()){
-            return new UsuarioDTO(usuario.get());
+            return usuario.get();
         }
         throw new UserNotFoundException(id);
     }
 
-    public UsuarioDTO insert(UsuarioLogistaRequestDTO usuario){
+    public UsuarioLogista insert(UsuarioLogistaRequestDTO usuario){
         UsuarioLogista usuarioLogista = new UsuarioLogista(usuario);
         TratadorCadastro tratadorEmail = new TratadorEmail(usuarioService);
-        TratadorCadastro tratador = new TratadorCnpj(repository);
+        TratadorCadastro tratador = new TratadorCnpj(this);
         tratadorEmail.setProximoTratador(tratador);
         tratadorEmail.tratarRequisicao(usuarioLogista);
         usuarioLogista = repository.save(usuarioLogista);
-        return new UsuarioDTO(usuarioLogista);
+        return usuarioLogista;
+    }
+
+    public Usuario findByCnpj(String cnpj) {
+        Optional<UsuarioLogista> usuario = repository.findByCnpj(cnpj);
+        if(usuario.isPresent()){
+            return usuario.get();
+        }
+        throw new UserNotFoundException(cnpj);
     }
 }

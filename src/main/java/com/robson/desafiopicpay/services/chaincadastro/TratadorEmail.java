@@ -1,10 +1,11 @@
-package com.robson.desafiopicpay.services.chain;
+package com.robson.desafiopicpay.services.chaincadastro;
 
 
 
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.services.UsuarioService;
 import com.robson.desafiopicpay.services.exceptions.DuplicateDataException;
+import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
 // @Component
 public class TratadorEmail extends TratadorCadastro {
@@ -17,11 +18,12 @@ public class TratadorEmail extends TratadorCadastro {
     @Override
     public void tratarRequisicao(Usuario usuario){
         String email = usuario.getEmail();
-        Usuario usuarioSalvo = service.findByEmail(email).usuario();
-        if(usuarioSalvo != null){
+        try {
+            service.findByEmail(email);
             throw new DuplicateDataException(email);
+        } catch (UserNotFoundException e) {
+            super.tratarRequisicao(usuario);
         }
-        super.tratarRequisicao(usuario);
         
     }
     

@@ -1,10 +1,6 @@
-package com.robson.desafiopicpay.services.chain;
-
-
-
+package com.robson.desafiopicpay.services.chaincadastro;
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
 
-// @Component
 public abstract class TratadorCadastro {
     protected TratadorCadastro proximoTratador;
 

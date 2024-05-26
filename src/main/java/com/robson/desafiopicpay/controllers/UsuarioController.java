@@ -3,7 +3,6 @@ package com.robson.desafiopicpay.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.robson.desafiopicpay.dtos.UsuarioDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
 
 import com.robson.desafiopicpay.dtos.response.TransacaoRecebidaResponseDTO;
@@ -38,11 +37,11 @@ public class UsuarioController {
     
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> findAll() {
-        List<UsuarioDTO> list = service.findAll();
+        List<Usuario> usuarios = service.findAll();
         List<UsuarioResponseDTO> response = new ArrayList<>();
-        for (UsuarioDTO usuarioDTO : list) {
-            Link link = linkTo(methodOn(UsuarioController.class).findById(usuarioDTO.usuario().getId())).withSelfRel();
-            UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuarioDTO.usuario(), link);
+        for (Usuario usuario : usuarios) {
+            Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();
+            UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuario, link);
             response.add(responseDTO);
         }
         return ResponseEntity.ok().body(response);
@@ -50,7 +49,7 @@ public class UsuarioController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable Long id){
-        Usuario usuario = service.findById(id).usuario();
+        Usuario usuario = service.findById(id);
         Link link = linkTo(methodOn(UsuarioController.class).findAll()).withRel("usuarios");
         UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuario, link);
         return ResponseEntity.ok().body(responseDTO);
@@ -70,15 +69,8 @@ public class UsuarioController {
 
     @PatchMapping(value = "/{id}")
     public ResponseEntity<UsuarioResponseDTO> updateBYId(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO update){
-        Usuario usuario = service.updateById(id, update).usuario();
+        Usuario usuario = service.updateById(id, update);
         Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();
         return ResponseEntity.ok().body(new UsuarioResponseDTO(usuario, link));
-    }   
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-    
+    }  
 }

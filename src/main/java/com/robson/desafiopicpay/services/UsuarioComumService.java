@@ -1,20 +1,18 @@
 package com.robson.desafiopicpay.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.robson.desafiopicpay.dtos.UsuarioDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioComumRequestDTO;
 import com.robson.desafiopicpay.entities.Transacao;
 import com.robson.desafiopicpay.entities.command.UsuarioComum;
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.repositories.UsuarioComumRepository;
-import com.robson.desafiopicpay.services.chain.TratadorCadastro;
-import com.robson.desafiopicpay.services.chain.TratadorCpf;
-import com.robson.desafiopicpay.services.chain.TratadorEmail;
+import com.robson.desafiopicpay.services.chaincadastro.TratadorCadastro;
+import com.robson.desafiopicpay.services.chaincadastro.TratadorCpf;
+import com.robson.desafiopicpay.services.chaincadastro.TratadorEmail;
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
 @Service
@@ -28,36 +26,38 @@ public class UsuarioComumService {
         this.usuarioService = usuarioService;
     }
 
-    public List<UsuarioDTO> findAll(){
-        List<UsuarioComum> listaDeUsuarios = repository.findAll();
-        List<UsuarioDTO> response = new ArrayList<>();
-        for (UsuarioComum usuario : listaDeUsuarios) {
-            UsuarioDTO dto = new UsuarioDTO(usuario);
-            response.add(dto);
-        }
-        return response;
+    public List<UsuarioComum> findAll(){
+        return repository.findAll();
     }
 
-    public UsuarioDTO findById(Long id){
+    public UsuarioComum findById(Long id){
         Optional<UsuarioComum> usuario = repository.findById(id);
         if(usuario.isPresent()){
-            return new UsuarioDTO(usuario.get());
+            return usuario.get();
         }
         throw new UserNotFoundException(id);
     }
 
     public List<Transacao> findTransacoesEnviadasByUserId(Long id){
-        Usuario usuario = findById(id).usuario();
-        return ((UsuarioComum) usuario).getHistoricoDeTransacoesEnviadas();
+        UsuarioComum usuario = findById(id);
+        return usuario.getHistoricoDeTransacoesEnviadas();
     }
 
-    public UsuarioDTO insert(UsuarioComumRequestDTO usuario){
+    public UsuarioComum insert(UsuarioComumRequestDTO usuario){
         UsuarioComum usuarioComum = new UsuarioComum(usuario);
         TratadorCadastro tratadorEmail = new TratadorEmail(usuarioService);
-        TratadorCadastro tratador = new TratadorCpf(repository);
+        TratadorCadastro tratador = new TratadorCpf(this);
         tratadorEmail.setProximoTratador(tratador);
         tratadorEmail.tratarRequisicao(usuarioComum);
         usuarioComum = repository.save(usuarioComum);
-        return new UsuarioDTO(usuarioComum);
+        return usuarioComum;
+    }
+
+    public Usuario findByCpf(String cpf) {
+        Optional<UsuarioComum> usuario = repository.findByCpf(cpf);
+        if(usuario.isPresent()){
+            return usuario.get();
+        }
+        throw new UserNotFoundException(cpf);
     }
 }

@@ -30,8 +30,11 @@ public class TransacaoService {
         if(transacao.idOrigem().equals(transacao.idDestino())) throw new TransactionNotCompletedException("Não é possivel transferir para sua própria conta");
         if(transacao.valor() <= 0) throw new TransactionNotCompletedException("Valor igual ou menor que zero");
 
-        Usuario usuarioOrigem = usuarioService.findById(transacao.idOrigem()).usuario();
-        Usuario usuarioDestino = usuarioService.findById(transacao.idDestino()).usuario();
+        Usuario usuarioOrigem = usuarioService.findById(transacao.idOrigem());
+        if (!transacao.senhaOrigem().equals(usuarioOrigem.getSenha())) {
+            throw new TransactionNotCompletedException("Senha incorreta");
+        }
+        Usuario usuarioDestino = usuarioService.findById(transacao.idDestino());
         
         Transacao transacaoEfetuada = usuarioOrigem.efetuarTransacao(transacao.valor(), usuarioDestino);
         ((UsuarioComum) usuarioOrigem).addHistoricoDeTransacoesEnviadas(transacaoEfetuada);

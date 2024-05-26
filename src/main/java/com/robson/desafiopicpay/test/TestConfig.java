@@ -22,7 +22,7 @@ public class TestConfig implements CommandLineRunner{
     @Override
     public void run(String... args)  {
         UsuarioComumRequestDTO dtoComum = new UsuarioComumRequestDTO("Alfredo Silva", "alfredo@gmail.com", "22223", 9.0 ,"00738700053" );
-        UsuarioComumRequestDTO dtoLogista = new UsuarioComumRequestDTO("Luciano Henrrique", "robsoncaiban@gmail.com", "555585", 1550.30, "51757917020");
+        UsuarioComumRequestDTO dtoLogista = new UsuarioComumRequestDTO("Luciano Henrrique", "robsoncaliban@gmail.com", "555585", 1550.30, "51757917020");
         // 26193723000148
         Usuario u1 = new UsuarioComum(dtoLogista);
         Usuario u2 = new UsuarioComum(dtoComum);

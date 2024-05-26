@@ -31,7 +31,7 @@ import jakarta.validation.constraints.Size;
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("U")
 public abstract class Usuario implements Serializable{
-    private static  final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +47,7 @@ public abstract class Usuario implements Serializable{
     private String nomeCompleto;
     private double saldo;
 
-    @OneToMany(mappedBy = "destino", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "destino")
     @JsonIgnore
     private List<Transacao> historicoDeTransacaosRecebidas = new ArrayList<>();
 

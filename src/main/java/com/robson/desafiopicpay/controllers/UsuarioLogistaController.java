@@ -2,9 +2,9 @@ package com.robson.desafiopicpay.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.robson.desafiopicpay.dtos.UsuarioDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioLogistaRequestDTO;
 import com.robson.desafiopicpay.dtos.response.UsuarioResponseDTO;
+import com.robson.desafiopicpay.entities.usuarios.UsuarioLogista;
 import com.robson.desafiopicpay.services.UsuarioLogistaService;
 
 import jakarta.validation.Valid;
@@ -23,24 +23,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-
-
 @RestController
 @RequestMapping(value = "/usuarios-logistas")
 public class UsuarioLogistaController {
     private UsuarioLogistaService service;
 
-   public UsuarioLogistaController(UsuarioLogistaService service) {
+    public UsuarioLogistaController(UsuarioLogistaService service) {
         this.service = service;
     }
 
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> findAll() {
-        List<UsuarioDTO> list = service.findAll();
+        List<UsuarioLogista> usuarios = service.findAll();
         List<UsuarioResponseDTO> response = new ArrayList<>();
-        for (UsuarioDTO usuarioDTO : list) {
-            Link link = linkTo(methodOn(UsuarioController.class).findById(usuarioDTO.usuario().getId())).withSelfRel();
-            UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuarioDTO.usuario(), link);
+        for (UsuarioLogista usuario : usuarios) {
+            Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();
+            UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuario, link);
             response.add(responseDTO);
         }
         return ResponseEntity.ok().body(response);
@@ -48,8 +46,9 @@ public class UsuarioLogistaController {
     
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> insertLogista(@RequestBody @Valid UsuarioLogistaRequestDTO usuario) {
-        UsuarioDTO usuarioDTO = service.insert(usuario);
-        UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuarioDTO.usuario(), null);
+        UsuarioLogista logista = service.insert(usuario);
+        Link link = linkTo(methodOn(UsuarioController.class).findById(logista.getId())).withSelfRel();
+        UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(logista, link);
         return ResponseEntity.ok().body( responseDTO);
     }
 

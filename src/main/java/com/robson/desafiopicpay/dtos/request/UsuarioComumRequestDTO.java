@@ -12,7 +12,7 @@ public record UsuarioComumRequestDTO(
     String nomeCompleto, 
     @NotBlank(message = "Insira o email do usuario") @Email(message = "Formato de email inválido") 
     String email, 
-    @NotBlank(message = "Insira uma senha") @Size(min = 4, message = "Deve ter mais de 4 carateres")
+    @NotBlank(message = "Insira uma senha") @Size(min = 6, max = 6,  message = "Deve ter mais de 6 carateres")
     String senha,
     @NotNull(message = "Insira um saldo inicial")
     double saldo, 
