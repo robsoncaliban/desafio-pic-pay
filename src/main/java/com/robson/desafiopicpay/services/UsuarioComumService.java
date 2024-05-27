@@ -10,9 +10,9 @@ import com.robson.desafiopicpay.entities.Transacao;
 import com.robson.desafiopicpay.entities.command.UsuarioComum;
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.repositories.UsuarioComumRepository;
-import com.robson.desafiopicpay.services.chaincadastro.TratadorCadastro;
-import com.robson.desafiopicpay.services.chaincadastro.TratadorCpf;
-import com.robson.desafiopicpay.services.chaincadastro.TratadorEmail;
+import com.robson.desafiopicpay.services.chain.TratadorCadastro;
+import com.robson.desafiopicpay.services.chain.TratadorCpf;
+import com.robson.desafiopicpay.services.chain.TratadorEmail;
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
 @Service

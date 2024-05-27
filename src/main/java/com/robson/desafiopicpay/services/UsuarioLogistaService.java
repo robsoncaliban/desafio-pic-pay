@@ -1,6 +1,5 @@
 package com.robson.desafiopicpay.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,9 +9,9 @@ import com.robson.desafiopicpay.dtos.request.UsuarioLogistaRequestDTO;
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.entities.usuarios.UsuarioLogista;
 import com.robson.desafiopicpay.repositories.UsuarioLogistaRepository;
-import com.robson.desafiopicpay.services.chaincadastro.TratadorCadastro;
-import com.robson.desafiopicpay.services.chaincadastro.TratadorCnpj;
-import com.robson.desafiopicpay.services.chaincadastro.TratadorEmail;
+import com.robson.desafiopicpay.services.chain.TratadorCadastro;
+import com.robson.desafiopicpay.services.chain.TratadorCnpj;
+import com.robson.desafiopicpay.services.chain.TratadorEmail;
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
 @Service
@@ -26,8 +25,7 @@ public class UsuarioLogistaService {
     }
 
     public List<UsuarioLogista> findAll(){
-        List<UsuarioLogista> logistas = repository.findAll();
-        return logistas;
+        return repository.findAll();
     }
 
     public UsuarioLogista findById(Long id){

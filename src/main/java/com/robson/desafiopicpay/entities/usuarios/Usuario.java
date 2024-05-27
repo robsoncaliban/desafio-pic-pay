@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robson.desafiopicpay.entities.Transacao;
 
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.DiscriminatorValue;
@@ -24,6 +23,8 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -36,15 +37,17 @@ public abstract class Usuario implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     @Email(message = "Formato de email inválido")
-    @NotBlank
     private String email;
-    @Size(min = 4, message = "Deve ter mais de 4 carateres")
     @NotBlank
+    @Size(min = 6, max = 6, message = "Deve ter 6 caracteres")
     private String senha;
     @NotBlank
-    @Size(min = 7, message = "Deve ter mais de 7 carateres")
+    @Size(min = 5, message = "Deve ter no minimo 5 caracteres")
+    @Pattern(regexp = "^(?!.*\\d)(?!.*[!@#$%^&*()_+={}\\[\\]|\\\\:;\"'<>,.?/~`])[A-Za-zÀ-ÿ]+ [A-Za-zÀ-ÿ ']{1,}$")
     private String nomeCompleto;
+    @PositiveOrZero(message = "Saldo invalido")
     private double saldo;
 
     @OneToMany(mappedBy = "destino")

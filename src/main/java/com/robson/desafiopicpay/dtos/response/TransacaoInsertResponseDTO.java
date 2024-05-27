@@ -14,12 +14,12 @@ public record TransacaoInsertResponseDTO(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     Instant data, 
     double valor, 
-    UsuarioResponseDTO origem, 
-    UsuarioResponseDTO destino
+    UsuarioTransacaoResponseDTO origem, 
+    UsuarioTransacaoResponseDTO destino
 ) {
     public TransacaoInsertResponseDTO(Transacao transacao) {
         this(transacao.getId(), transacao.getEstado(), transacao.getData(), transacao.getValor(),
-            new UsuarioResponseDTO(transacao.getOrigem(), null),
-            new UsuarioResponseDTO(transacao.getDestino(), null));
+            new UsuarioTransacaoResponseDTO(transacao.getOrigem()),
+            new UsuarioTransacaoResponseDTO(transacao.getDestino()));
     }
 }

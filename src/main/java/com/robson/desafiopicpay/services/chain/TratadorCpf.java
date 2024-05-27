@@ -1,4 +1,4 @@
-package com.robson.desafiopicpay.services.chaincadastro;
+package com.robson.desafiopicpay.services.chain;
 
 
 import com.robson.desafiopicpay.entities.command.UsuarioComum;
