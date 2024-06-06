@@ -34,14 +34,14 @@ public class Transacao implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "origem_id")
-    private UsuarioComum origem;
+    private Usuario origem;
     @ManyToOne
     @JoinColumn(name = "destino_id")
     private Usuario destino;
     
     public Transacao() {
     }
-    public Transacao(double valor, UsuarioComum origem, Usuario destino) {
+    public Transacao(double valor, Usuario origem, Usuario destino) {
         this.data = Instant.now();
         this.valor = valor;
         this.origem = origem;
@@ -60,10 +60,10 @@ public class Transacao implements Serializable{
     public void setValor(double valor) {
         this.valor = valor;
     }
-    public UsuarioComum getOrigem() {
+    public Usuario getOrigem() {
         return origem;
     }
-    public void setOrigem(UsuarioComum origem) {
+    public void setOrigem(Usuario origem) {
         this.origem = origem;
     }
     public Usuario getDestino() {

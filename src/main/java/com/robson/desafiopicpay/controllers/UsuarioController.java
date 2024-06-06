@@ -55,17 +55,6 @@ public class UsuarioController {
     }
 
 
-    @GetMapping(value = "/{id}/transacoes-recebidas")
-    public ResponseEntity<List<TransacaoRecebidaResponseDTO>> findTransacoesRecebidasByUserId(@PathVariable Long id){
-        List<Transacao> list = service.findTransacoesRecebidasByUserId(id);
-        List<TransacaoRecebidaResponseDTO> responseDTOs = new ArrayList<>();
-        for (Transacao transacao : list) {
-            TransacaoRecebidaResponseDTO transacaoRecebidaResponse =  new TransacaoRecebidaResponseDTO(transacao);
-            responseDTOs.add(transacaoRecebidaResponse);
-        }
-        return ResponseEntity.ok().body(responseDTOs);
-    }
-
     @PatchMapping(value = "/{id}")
     public ResponseEntity<UsuarioResponseDTO> updateBYId(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO update){
         Usuario usuario = service.updateById(id, update);

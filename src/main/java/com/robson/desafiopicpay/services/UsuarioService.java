@@ -36,11 +36,6 @@ public class UsuarioService{
         throw new UserNotFoundException(id);
     }
 
-    public List<Transacao> findTransacoesRecebidasByUserId(Long id){
-        Usuario usuario = findById(id);
-        return usuario.getHistoricoDeTransacaosRecebidas();
-    }
-
     public Usuario findByEmail(String email) {
         Optional<Usuario> usuario = repository.findByEmail(email);
         if(usuario.isPresent()){
