@@ -1,10 +1,9 @@
 package com.robson.desafiopicpay.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 
-import com.robson.desafiopicpay.entities.command.UsuarioComum;
-import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.services.enums.EstadoTransacao;
 
 import jakarta.persistence.Entity;
@@ -16,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity(name = "transacao")
 @Table(name = "transacoes")
@@ -26,26 +27,29 @@ public class Transacao implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
  
+    @Temporal(TemporalType.TIMESTAMP)
     private Instant data;
-    private double valor;
+    
+    private BigDecimal valor;
 
     @Enumerated(EnumType.STRING)
     private EstadoTransacao estado;
 
     @ManyToOne
     @JoinColumn(name = "origem_id")
-    private Usuario origem;
+    private Conta origem;
     @ManyToOne
     @JoinColumn(name = "destino_id")
-    private Usuario destino;
+    private Conta destino;
     
     public Transacao() {
     }
-    public Transacao(double valor, Usuario origem, Usuario destino) {
+    public Transacao(BigDecimal valor, Conta origem, Conta destino, EstadoTransacao estado) {
         this.data = Instant.now();
         this.valor = valor;
         this.origem = origem;
         this.destino = destino;
+        this.estado = estado;
     }
 
     public long getId() {
@@ -54,22 +58,22 @@ public class Transacao implements Serializable{
     public Instant getData() {
         return data;
     }
-    public double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
-    public void setValor(double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
-    public Usuario getOrigem() {
+    public Conta getOrigem() {
         return origem;
     }
-    public void setOrigem(Usuario origem) {
+    public void setOrigem(Conta origem) {
         this.origem = origem;
     }
-    public Usuario getDestino() {
+    public Conta getDestino() {
         return destino;
     }
-    public void setDestino(Usuario destino) {
+    public void setDestino(Conta destino) {
         this.destino = destino;
     }
     public EstadoTransacao getEstado() {
@@ -95,9 +99,7 @@ public class Transacao implements Serializable{
         if (getClass() != obj.getClass())
             return false;
         Transacao other = (Transacao) obj;
-        if (id != other.id)
-            return false;
-        return true;
+        return id != other.id;
     }
     public static long getSerialversionuid() {
         return serialVersionUID;

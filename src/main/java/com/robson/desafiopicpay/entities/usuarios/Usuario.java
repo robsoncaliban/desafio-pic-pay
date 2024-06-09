@@ -1,11 +1,15 @@
 package com.robson.desafiopicpay.entities.usuarios;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
+import com.robson.desafiopicpay.entities.Conta;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -24,8 +28,6 @@ public class Usuario implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     private TipoUsuario tipo;
 
     @NotBlank
@@ -39,22 +41,33 @@ public class Usuario implements Serializable{
     @Pattern(regexp = "^(?!.*\\d)(?!.*[!@#$%^&*()_+={}\\[\\]|\\\\:;\"'<>,.?/~`])[A-Za-zÀ-ÿ]+ [A-Za-zÀ-ÿ ']+$")
     private String nomeCompleto;
 
+    @OneToOne
+    private Conta conta;
+
     @Size(min = 11, max = 14)
     private String cpfOuCnpj;
 
 
     protected Usuario(){
     }
-    protected Usuario(String nomeCompleto, String email, String senha, String cpfOuCnpj, TipoUsuario tipo) {
+    protected Usuario(String nomeCompleto, String email, String senha, String cpfOuCnpj, TipoUsuario tipo, BigDecimal saldo) {
         this.tipo = tipo;
         this.email = email;
         this.senha = senha;
         this.nomeCompleto = nomeCompleto;
         this.cpfOuCnpj = cpfOuCnpj;
+        this.conta = new Conta(this, saldo);
     }
 
     public boolean autenticar(String senha){
         return this.senha.equals(senha);
+    }
+
+    public Conta getConta() {
+        return conta;
+    }
+    public void setConta(Conta conta) {
+        this.conta = conta;
     }
 
     public long getId() {
