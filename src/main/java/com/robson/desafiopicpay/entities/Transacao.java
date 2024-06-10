@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-import com.robson.desafiopicpay.services.enums.EstadoTransacao;
+import com.robson.desafiopicpay.entities.enums.StatusTransacao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,7 +33,7 @@ public class Transacao implements Serializable{
     private BigDecimal valor;
 
     @Enumerated(EnumType.STRING)
-    private EstadoTransacao estado;
+    private StatusTransacao status;
 
     @ManyToOne
     @JoinColumn(name = "origem_id")
@@ -44,12 +44,12 @@ public class Transacao implements Serializable{
     
     public Transacao() {
     }
-    public Transacao(BigDecimal valor, Conta origem, Conta destino, EstadoTransacao estado) {
+    public Transacao(BigDecimal valor, Conta origem, Conta destino, StatusTransacao status) {
         this.data = Instant.now();
         this.valor = valor;
         this.origem = origem;
         this.destino = destino;
-        this.estado = estado;
+        this.status = status;
     }
 
     public long getId() {
@@ -76,11 +76,11 @@ public class Transacao implements Serializable{
     public void setDestino(Conta destino) {
         this.destino = destino;
     }
-    public EstadoTransacao getEstado() {
-        return estado;
+    public StatusTransacao getStatus() {
+        return status;
     }
-    public void setEstado(EstadoTransacao estado) {
-        this.estado = estado;
+    public void setStatus(StatusTransacao status) {
+        this.status = status;
     }
 
     @Override

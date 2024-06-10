@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.robson.desafiopicpay.entities.usuarios.TipoUsuario;
+import com.robson.desafiopicpay.entities.enums.StatusTransacao;
+import com.robson.desafiopicpay.entities.enums.TipoUsuario;
 import com.robson.desafiopicpay.entities.usuarios.Usuario;
-import com.robson.desafiopicpay.services.enums.EstadoTransacao;
 import com.robson.desafiopicpay.services.exceptions.TransactionForbiddenException;
 import com.robson.desafiopicpay.services.exceptions.TransactionNotCompletedException;
 
@@ -48,12 +48,14 @@ public class Conta implements Serializable {
     }
 
     public Transacao efetuarTransacao(BigDecimal valor, Conta destino){
-        if(dono.getTipo().equals(TipoUsuario.USUARIO_COMUM)){
-            setSaldo(getSaldo().subtract(valor));
-            destino.setSaldo(destino.getSaldo().add(valor));
-            return new Transacao(valor, this, destino, EstadoTransacao.CONCLUIDA);
-        }
-        throw new TransactionForbiddenException(dono.getId());   
+        if(dono.getTipo().equals(TipoUsuario.USUARIO_LOGISTA)) throw new TransactionForbiddenException(dono.getId());
+        
+        setSaldo(getSaldo().subtract(valor));
+        destino.setSaldo(destino.getSaldo().add(valor));
+        Transacao transacaoConcluida = new Transacao(valor, this, destino, StatusTransacao.CONCLUIDA);
+        addTransacoesEnviadas(transacaoConcluida);
+        destino.addTransacoesRecebidas(transacaoConcluida);
+        return transacaoConcluida;  
     }
 
     public void addTransacoesEnviadas(Transacao transacao) {

@@ -1,17 +1,20 @@
 package com.robson.desafiopicpay.services;
 
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import com.robson.desafiopicpay.dtos.request.TransacaoRequestDTO;
 import com.robson.desafiopicpay.dtos.response.TransacaoInsertResponseDTO;
+import com.robson.desafiopicpay.entities.Conta;
 import com.robson.desafiopicpay.entities.Transacao;
-import com.robson.desafiopicpay.entities.command.UsuarioComum;
-import com.robson.desafiopicpay.entities.usuarios.Usuario;
+import com.robson.desafiopicpay.entities.enums.StatusTransacao;
 import com.robson.desafiopicpay.repositories.TransacaoRepository;
 import com.robson.desafiopicpay.services.exceptions.TransactionNotCompletedException;
 
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 
 
 @Service
@@ -26,39 +29,38 @@ public class TransacaoService {
         this.emailService = emailService;
     }  
 
+    @Transactional
     public TransacaoInsertResponseDTO efetuarTransacao(TransacaoRequestDTO transacao){
-        if(transacao.idOrigem().equals(transacao.idDestino())) throw new TransactionNotCompletedException("Não é possivel transferir para sua própria conta");
-        if(transacao.valor() <= 0) throw new TransactionNotCompletedException("Valor igual ou menor que zero");
-
-        Usuario usuarioOrigem = usuarioService.findById(transacao.idOrigem());
+        validarTransacao(transacao);
+        Conta contaOrigem = usuarioService.findById(transacao.idOrigem()).getConta();
+        Conta contaDestino = usuarioService.findById(transacao.idDestino()).getConta();
         
-        if(!transacao.senhaOrigem().equals(usuarioOrigem.getSenha())) throw new TransactionNotCompletedException("Senha incorreta");
-        
-        Usuario usuarioDestino = usuarioService.findById(transacao.idDestino());
-        
-        Transacao transacaoEfetuada = usuarioOrigem.efetuarTransacao(transacao.valor(), usuarioDestino);
-        ((UsuarioComum) usuarioOrigem).addHistoricoDeTransacoesEnviadas(transacaoEfetuada);
-        usuarioDestino.addHistoricoDeTransacaosRecebidas(transacaoEfetuada);
+        Transacao transacaoEfetuada = contaOrigem.efetuarTransacao(transacao.valor(), contaDestino);
         try {
             enviarEmail(transacaoEfetuada);
         } catch (MessagingException e) {
-            usuarioOrigem.cancelarUltimaTransacao();
-            throw new TransactionNotCompletedException("Envio para o email: " + usuarioDestino.getEmail()+ " falhou");
+            transacaoEfetuada.setStatus(StatusTransacao.EMAIL_PENDENTE);
         }finally{
             repository.save(transacaoEfetuada);
         }
         return new TransacaoInsertResponseDTO(transacaoEfetuada);  
     }
 
+    private void validarTransacao(TransacaoRequestDTO transacao){
+        if(transacao.valor().compareTo(BigDecimal.ZERO) <= 0) throw new TransactionNotCompletedException("Valor igual ou menor que zero");
+        if(transacao.idOrigem().equals(transacao.idDestino())) throw new TransactionNotCompletedException("Não é possivel transferir para sua própria conta");
+        if(usuarioService.findById(transacao.idOrigem()).autenticar(transacao.senhaOrigem())) throw new TransactionNotCompletedException("Senha incorreta");
+    }
+
     private void enviarEmail(Transacao transacao) throws MessagingException{
-        Usuario uDestino = transacao.getDestino();
-        Usuario uOrigem = transacao.getOrigem();
+        Conta cDestino = transacao.getDestino();
+        Conta cOrigem = transacao.getOrigem();
         String assunto = "Recebimento de Transação";
-        String mensagemHtml = "Olá " + uDestino.getNomeCompleto() + ",<br><br>"
+        String mensagemHtml = "Olá " + cDestino.getDono().getNomeCompleto() + ",<br><br>"
         + "Gostaríamos de confirmar que a seguinte transação foi recebida com sucesso:<br><br>"
-        + "<b>Enviada por:</b>" + uOrigem.getNomeCompleto() + "<br>"
+        + "<b>Enviada por:</b>" + cOrigem.getDono().getNomeCompleto() + "<br>"
         + "<b>Valor:</b> " + transacao.getValor() + "<br>"
-        + "<b>Saldo Atual:</b> " + uDestino.getSaldo() + "<br>";
-        emailService.enviarEmailTexto(uDestino.getEmail(), assunto, mensagemHtml);  
+        + "<b>Saldo Atual:</b> " + cDestino.getSaldo() + "<br>";
+        emailService.enviarEmailTexto(cDestino.getDono().getEmail(), assunto, mensagemHtml);  
     }
 }
