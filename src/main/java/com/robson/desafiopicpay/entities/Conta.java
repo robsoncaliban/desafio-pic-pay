@@ -2,14 +2,11 @@ package com.robson.desafiopicpay.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.robson.desafiopicpay.entities.enums.StatusTransacao;
 import com.robson.desafiopicpay.entities.enums.TipoUsuario;
-import com.robson.desafiopicpay.entities.usuarios.Usuario;
 import com.robson.desafiopicpay.services.exceptions.TransactionForbiddenException;
-import com.robson.desafiopicpay.services.exceptions.TransactionNotCompletedException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -64,11 +61,12 @@ public class Conta implements Serializable {
     public void addTransacoesRecebidas(Transacao transacao) {
         transacoesRecebidas.add(transacao);
     }
-    public List<Transacao> getHistoricoDeTransacoes(){
-        List<Transacao> historicoCompleto = new ArrayList<>();
-        historicoCompleto.addAll(transacoesEnviadas);
-        historicoCompleto.addAll(transacoesRecebidas);
-        return historicoCompleto;
+
+    public List<Transacao> getTransacoesEnviadas() {
+        return transacoesEnviadas;
+    }
+    public List<Transacao> getTransacoesRecebidas() {
+        return transacoesRecebidas;
     }
 
     public Long getId() {
@@ -85,10 +83,7 @@ public class Conta implements Serializable {
     }
 
     public void setSaldo(BigDecimal saldo) {
-        if(saldo.compareTo(BigDecimal.ZERO) >= 0){
-            this.saldo = saldo;
-        }
-        throw new TransactionNotCompletedException("Saldo insuficiente");
+        this.saldo = saldo;
     }
 
 }

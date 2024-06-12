@@ -1,11 +1,17 @@
-package com.robson.desafiopicpay.entities.usuarios;
+package com.robson.desafiopicpay.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.robson.desafiopicpay.entities.Conta;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
+import com.robson.desafiopicpay.entities.enums.TipoUsuario;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,15 +25,10 @@ import jakarta.validation.constraints.Size;
 public class Usuario implements Serializable{
     private static final long serialVersionUID = 1L;
 
-    // refatorar Usuario
-    // fazer usuario ter conta
-    // criptografar senha
-    // tirar UsuarioLogista e UsuarioComum
-    // cancelamento de transacao
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     private TipoUsuario tipo;
 
     @NotBlank
@@ -42,21 +43,21 @@ public class Usuario implements Serializable{
     private String nomeCompleto;
 
     @OneToOne
+    @Cascade(CascadeType.ALL)
     private Conta conta;
 
     @Size(min = 11, max = 14)
     private String cpfOuCnpj;
 
 
-    protected Usuario(){
+    public Usuario(){
     }
-    protected Usuario(String nomeCompleto, String email, String senha, String cpfOuCnpj, TipoUsuario tipo, BigDecimal saldo) {
-        this.tipo = tipo;
-        this.email = email;
-        this.senha = senha;
-        this.nomeCompleto = nomeCompleto;
-        this.cpfOuCnpj = cpfOuCnpj;
-        this.conta = new Conta(this, saldo);
+    public Usuario(UsuarioRequestDTO usuarioDto) {
+        this.email = usuarioDto.email();
+        this.senha = usuarioDto.senha();
+        this.nomeCompleto = usuarioDto.nomeCompleto();
+        this.cpfOuCnpj = usuarioDto.cpfCnpj();
+        this.conta = new Conta(this, new BigDecimal(usuarioDto.saldo()));
     }
 
     public boolean autenticar(String senha){
