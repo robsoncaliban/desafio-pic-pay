@@ -5,21 +5,24 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.robson.desafiopicpay.services.chain.TratadorCadastro;
+import com.robson.desafiopicpay.services.chain.TratadorCpfCnpj;
+import com.robson.desafiopicpay.services.chain.TratadorEmail;
+import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
 import com.robson.desafiopicpay.entities.Transacao;
-import com.robson.desafiopicpay.entities.usuarios.Usuario;
+import com.robson.desafiopicpay.entities.Usuario;
 import com.robson.desafiopicpay.repositories.UsuarioRepository;
 
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
-import com.robson.desafiopicpay.services.utils.UsuarioMapper;
+import com.robson.desafiopicpay.services.utils.BeanUtilsIgnoreNull;
 
 
 @Service
 public class UsuarioService{
     private UsuarioRepository repository;
-    private UsuarioMapper mapper;
 
-    public UsuarioService(UsuarioRepository repository, UsuarioMapper mapper) {
+    public UsuarioService(UsuarioRepository repository) {
         this.repository = repository;
     }
 
@@ -74,7 +77,7 @@ public class UsuarioService{
 
     public Usuario updateById(Long id, UsuarioUpdateRequestDTO usuarioUpdate){
         Usuario usuario = findById(id);
-        mapper.updateUsuarioFromDto(usuarioUpdate, usuario);
+        BeanUtilsIgnoreNull.copyProperties(usuarioUpdate, usuario);
         return repository.save(usuario);
     }
 
