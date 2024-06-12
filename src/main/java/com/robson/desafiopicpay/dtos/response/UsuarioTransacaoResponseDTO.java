@@ -1,7 +1,7 @@
 package com.robson.desafiopicpay.dtos.response;
 
 
-import com.robson.desafiopicpay.entities.usuarios.Usuario;
+import com.robson.desafiopicpay.entities.Usuario;
 
 public record UsuarioTransacaoResponseDTO(
     Long id,
