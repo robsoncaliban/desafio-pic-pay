@@ -21,11 +21,30 @@ public class UsuarioService{
 
     public UsuarioService(UsuarioRepository repository, UsuarioMapper mapper) {
         this.repository = repository;
-        this.mapper  = mapper;
+    }
+
+    public Usuario insert(UsuarioRequestDTO usuario){
+        Usuario novoUsuario = new Usuario(usuario);
+        TratadorCadastro tratadorEmail = new TratadorEmail(this);
+        TratadorCadastro tratador = new TratadorCpfCnpj(this);
+        tratadorEmail.setProximoTratador(tratador);
+        tratadorEmail.tratarRequisicao(novoUsuario);
+        novoUsuario = repository.save(novoUsuario);
+        return novoUsuario;
     }
 
     public List<Usuario> findAll(){
         return repository.findAll();
+    }
+
+    public List<Transacao> findTransacoesEnviadasByUserId(Long id){
+        Usuario usuario = findById(id);
+        return usuario.getConta().getTransacoesEnviadas();
+    }
+
+    public List<Transacao> findTransacoesRecebidasByUserId(Long id){
+        Usuario usuario = findById(id);
+        return usuario.getConta().getTransacoesRecebidas();
     }
 
     public Usuario findById(Long id){
@@ -43,6 +62,15 @@ public class UsuarioService{
         }
         throw new UserNotFoundException(email);
     }
+
+    public Usuario findByCpfCnpj(String cpfCnpj){
+        Optional<Usuario> usuario = repository.findByCpfOuCnpj(cpfCnpj);
+        if(usuario.isPresent()){
+            return usuario.get();
+        }
+        throw new UserNotFoundException(cpfCnpj);
+    }
+
 
     public Usuario updateById(Long id, UsuarioUpdateRequestDTO usuarioUpdate){
         Usuario usuario = findById(id);
