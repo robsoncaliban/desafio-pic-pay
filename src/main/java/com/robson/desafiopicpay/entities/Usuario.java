@@ -8,6 +8,7 @@ import org.hibernate.annotations.CascadeType;
 
 import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
 import com.robson.desafiopicpay.entities.enums.TipoUsuario;
+import com.robson.desafiopicpay.validation.constraint.CpfCnpj;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,7 +47,7 @@ public class Usuario implements Serializable{
     @Cascade(CascadeType.ALL)
     private Conta conta;
 
-    @Size(min = 11, max = 14)
+    @CpfCnpj
     private String cpfOuCnpj;
 
 

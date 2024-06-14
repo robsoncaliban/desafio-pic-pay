@@ -1,6 +1,8 @@
 package com.robson.desafiopicpay.dtos.request;
 
 
+import com.robson.desafiopicpay.validation.constraint.CpfCnpj;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,5 +17,6 @@ public record UsuarioRequestDTO(
     @NotBlank(message = "Insira um saldo inicial")
     String saldo, 
     @NotBlank(message = "Insira um cpf ou cnpj") 
+    @CpfCnpj
     String cpfCnpj
 ) {}
