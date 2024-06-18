@@ -73,7 +73,7 @@ public class UsuarioController {
 
     @GetMapping(value = "/{id}/transacoes/recebidas")
     public ResponseEntity<List<TransacaoRecebidaResponseDTO>> findTransacoesRecebidasByUserId(@PathVariable Long id){
-        List<Transacao> list = service.findTransacoesEnviadasByUserId(id);
+        List<Transacao> list = service.findTransacoesRecebidasByUserId(id);
         List<TransacaoRecebidaResponseDTO> responseDTOs = new ArrayList<>();
         for (Transacao transacao : list) {
             TransacaoRecebidaResponseDTO transacaoRecebidaResponse =  new TransacaoRecebidaResponseDTO(transacao);
