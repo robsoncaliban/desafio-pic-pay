@@ -36,7 +36,6 @@ public class Usuario implements Serializable{
     @Email(message = "Formato de email inválido")
     private String email;
     @NotBlank
-    @Size(min = 6, max = 6, message = "Deve ter 6 caracteres")
     private String senha;
     @NotBlank
     @Size(min = 5, message = "Deve ter no minimo 5 caracteres")
@@ -59,10 +58,6 @@ public class Usuario implements Serializable{
         this.nomeCompleto = usuarioDto.nomeCompleto();
         this.cpfOuCnpj = usuarioDto.cpfCnpj();
         this.conta = new Conta(this, new BigDecimal(usuarioDto.saldo()));
-    }
-
-    public boolean autenticar(String senha){
-        return this.senha.equals(senha);
     }
 
     public Conta getConta() {
