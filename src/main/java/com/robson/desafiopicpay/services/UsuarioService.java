@@ -3,6 +3,8 @@ package com.robson.desafiopicpay.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,18 +42,8 @@ public class UsuarioService{
         return novoUsuario;
     }
 
-    public List<Usuario> findAll(){
-        return repository.findAll();
-    }
-
-    public List<Transacao> findTransacoesEnviadasByUserId(Long id){
-        Usuario usuario = findById(id);
-        return usuario.getConta().getTransacoesEnviadas();
-    }
-
-    public List<Transacao> findTransacoesRecebidasByUserId(Long id){
-        Usuario usuario = findById(id);
-        return usuario.getConta().getTransacoesRecebidas();
+    public Page<Usuario> findAll(Pageable page){
+        return repository.findAll(page);
     }
 
     public Usuario findById(Long id){
@@ -69,7 +61,7 @@ public class UsuarioService{
         }
         throw new UserNotFoundException(email);
     }
-
+    
     public Usuario findByCpfCnpj(String cpfCnpj){
         Optional<Usuario> usuario = repository.findByCpfOuCnpj(cpfCnpj);
         if(usuario.isPresent()){

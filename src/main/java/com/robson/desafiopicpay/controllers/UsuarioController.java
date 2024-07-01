@@ -5,11 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
-import com.robson.desafiopicpay.dtos.response.TransacaoEnviadaResponseDTO;
-import com.robson.desafiopicpay.dtos.response.TransacaoRecebidaResponseDTO;
 import com.robson.desafiopicpay.dtos.response.UsuarioGetByIdResponseDTO;
 import com.robson.desafiopicpay.dtos.response.UsuarioResponseDTO;
-import com.robson.desafiopicpay.entities.Transacao;
 import com.robson.desafiopicpay.entities.Usuario;
 import com.robson.desafiopicpay.services.UsuarioService;
 
@@ -19,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +41,10 @@ public class UsuarioController {
     }
     
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> findAll() {
-        List<Usuario> usuarios = service.findAll();
+    public ResponseEntity<List<UsuarioResponseDTO>> findAll(
+        @PageableDefault(page = 0, size = 10) Pageable page) {
+
+        List<Usuario> usuarios = service.findAll(page).getContent();
         List<UsuarioResponseDTO> response = new ArrayList<>();
         for (Usuario usuario : usuarios) {
             Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();
@@ -55,42 +57,21 @@ public class UsuarioController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UsuarioGetByIdResponseDTO> findById(@PathVariable Long id){
         Usuario usuario = service.findById(id);
-        Link link = linkTo(methodOn(UsuarioController.class).findAll()).withRel("usuarios");
+        Pageable pageable = PageRequest.of(0, 10);
+        Link link = linkTo(methodOn(UsuarioController.class).findAll(pageable)).withRel("usuarios");
         List<Link> historicoDeTransacoes = criarLinksTransacao(usuario.getId());
         UsuarioGetByIdResponseDTO responseDTO = new UsuarioGetByIdResponseDTO(usuario, link, historicoDeTransacoes);
         return ResponseEntity.ok().body(responseDTO);
     }
     
     private List<Link> criarLinksTransacao(Long id){
-        Link transacoesEnviadas = linkTo(methodOn(UsuarioController.class)
-        .findTransacoesEnviadasByUserId(id))
+        Link transacoesEnviadas = linkTo(methodOn(TransacaoController.class)
+        .findTransacoesEnviadasByUserId(id, null))
         .withRel("transacoesEnviadas");
-        Link transacoesRecebidas = linkTo(methodOn(UsuarioController.class)
-        .findTransacoesRecebidasByUserId(id))
+        Link transacoesRecebidas = linkTo(methodOn(TransacaoController.class)
+        .findTransacoesRecebidasByUserId(id, null))
         .withRel("transacoesRecebidas");
         return new ArrayList<>(Arrays.asList(transacoesEnviadas,transacoesRecebidas));
-    }
-
-    @GetMapping(value = "/{id}/transacoes/recebidas")
-    public ResponseEntity<List<TransacaoRecebidaResponseDTO>> findTransacoesRecebidasByUserId(@PathVariable Long id){
-        List<Transacao> list = service.findTransacoesRecebidasByUserId(id);
-        List<TransacaoRecebidaResponseDTO> responseDTOs = new ArrayList<>();
-        for (Transacao transacao : list) {
-            TransacaoRecebidaResponseDTO transacaoRecebidaResponse =  new TransacaoRecebidaResponseDTO(transacao);
-            responseDTOs.add(transacaoRecebidaResponse);
-        }
-        return ResponseEntity.ok().body(responseDTOs);
-    }
-
-    @GetMapping(value = "/{id}/transacoes/enviadas")
-    public ResponseEntity<List<TransacaoEnviadaResponseDTO>> findTransacoesEnviadasByUserId(@PathVariable Long id){
-        List<Transacao> list = service.findTransacoesEnviadasByUserId(id);
-        List<TransacaoEnviadaResponseDTO> responseDTOs = new ArrayList<>();
-        for (Transacao transacao : list) {
-            TransacaoEnviadaResponseDTO transacaoRecebidaResponse = new TransacaoEnviadaResponseDTO(transacao);
-            responseDTOs.add(transacaoRecebidaResponse);
-        }
-        return ResponseEntity.ok().body(responseDTOs);
     }
 
     @PostMapping

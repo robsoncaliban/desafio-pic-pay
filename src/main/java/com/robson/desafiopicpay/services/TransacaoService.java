@@ -3,12 +3,15 @@ package com.robson.desafiopicpay.services;
 
 import java.math.BigDecimal;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.robson.desafiopicpay.dtos.request.TransacaoRequestDTO;
 import com.robson.desafiopicpay.dtos.response.TransacaoInsertResponseDTO;
 import com.robson.desafiopicpay.entities.Conta;
 import com.robson.desafiopicpay.entities.Transacao;
+import com.robson.desafiopicpay.entities.Usuario;
 import com.robson.desafiopicpay.entities.enums.StatusTransacao;
 import com.robson.desafiopicpay.repositories.TransacaoRepository;
 import com.robson.desafiopicpay.services.exceptions.TransactionNotCompletedException;
@@ -28,6 +31,18 @@ public class TransacaoService {
         this.usuarioService = service;
         this.emailService = emailService;
     }  
+
+    public Page<Transacao> findTransacoesEnviadasByUserId(Long idUsuario, Pageable page){
+        Usuario usuario = usuarioService.findById(idUsuario);
+        Long contaId = usuario.getConta().getId();
+        return repository.buscarTransacoesEnviadaByUsuarioId(contaId, page);
+    }
+
+    public Page<Transacao> findTransacoesRecebidasByUserId(Long idUsuario, Pageable page){
+        Usuario usuario = usuarioService.findById(idUsuario);
+        Long idConta =  usuario.getConta().getId();
+        return repository.buscarTransacoesRecebidasByUsuarioId(idConta, page);
+    }
 
     @Transactional
     public TransacaoInsertResponseDTO efetuarTransacao(TransacaoRequestDTO transacao){
