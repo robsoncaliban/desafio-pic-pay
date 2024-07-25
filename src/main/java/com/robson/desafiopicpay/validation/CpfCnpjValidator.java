@@ -11,6 +11,7 @@ import jakarta.validation.ConstraintValidatorContext;
 /**
  * 
  * @author Clairton Luz - clairton.c.l@gmail.com
+ * https://gist.github.com/clairtonluz/0e82a03e8b6c148608f1
  *
  */
 public class CpfCnpjValidator implements ConstraintValidator<CpfCnpj, String> {

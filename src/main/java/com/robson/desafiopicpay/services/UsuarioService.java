@@ -1,6 +1,5 @@
 package com.robson.desafiopicpay.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -13,7 +12,6 @@ import com.robson.desafiopicpay.services.chain.TratadorCpfCnpj;
 import com.robson.desafiopicpay.services.chain.TratadorEmail;
 import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
-import com.robson.desafiopicpay.entities.Transacao;
 import com.robson.desafiopicpay.entities.Usuario;
 import com.robson.desafiopicpay.repositories.UsuarioRepository;
 import com.robson.desafiopicpay.services.exceptions.AuthenticationFailureException;
@@ -69,7 +67,6 @@ public class UsuarioService{
         }
         throw new UserNotFoundException(cpfCnpj);
     }
-
 
     public Usuario updateById(Long id, UsuarioUpdateRequestDTO usuarioUpdate){
         Usuario usuario = findById(id);

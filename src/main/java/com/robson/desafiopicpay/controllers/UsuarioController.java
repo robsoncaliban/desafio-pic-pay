@@ -83,7 +83,7 @@ public class UsuarioController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<UsuarioResponseDTO> updateBYId(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO update){
+    public ResponseEntity<UsuarioResponseDTO> updateById(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO update){
         Usuario usuario = service.updateById(id, update);
         Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();
         return ResponseEntity.ok().body(new UsuarioResponseDTO(usuario, link));
