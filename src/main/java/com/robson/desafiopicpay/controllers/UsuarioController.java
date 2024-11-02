@@ -10,12 +10,17 @@ import com.robson.desafiopicpay.dtos.response.UsuarioResponseDTO;
 import com.robson.desafiopicpay.entities.Usuario;
 import com.robson.desafiopicpay.services.UsuarioService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +36,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping(value = "/api/usuarios")
+@Tag(name = "pic-pay-api")
 public class UsuarioController {
     
     private UsuarioService service;
@@ -41,8 +47,13 @@ public class UsuarioController {
     }
     
     @GetMapping
+    @Operation(summary = "Busca todos os usuarios cadastrados", method = "GET")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
     public ResponseEntity<List<UsuarioResponseDTO>> findAll(
-        @PageableDefault(page = 0, size = 10) Pageable page) {
+        @ParameterObject @PageableDefault(page = 0, size = 10) Pageable page) {
 
         List<Usuario> usuarios = service.findAll(page).getContent();
         List<UsuarioResponseDTO> response = new ArrayList<>();
