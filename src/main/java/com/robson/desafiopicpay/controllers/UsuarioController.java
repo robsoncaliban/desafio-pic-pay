@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -90,7 +91,13 @@ public class UsuarioController {
         return new ArrayList<>(Arrays.asList(transacoesEnviadas,transacoesRecebidas));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Cria um usuario", method = "POST")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",description = "Usuario adicionado"),
+        @ApiResponse(responseCode = "400",description = "Parametros invalidos"),
+        @ApiResponse(responseCode = "409",description = "Conflito de credenciais"),
+    })
     public ResponseEntity<UsuarioResponseDTO> insert(@RequestBody @Valid UsuarioRequestDTO usuario) {
         Usuario usuarioComum = service.insert(usuario); 
         Link link = linkTo(methodOn(UsuarioController.class).findById(usuarioComum.getId())).withSelfRel();
