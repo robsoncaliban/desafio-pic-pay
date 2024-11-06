@@ -66,6 +66,11 @@ public class UsuarioController {
     }
 
     @GetMapping(value = "/{id}")
+    @Operation(summary = "Busca um usuario pelo id", method = "POST")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+        @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
+    })
     public ResponseEntity<UsuarioGetByIdResponseDTO> findById(@PathVariable Long id){
         Usuario usuario = service.findById(id);
         Pageable pageable = PageRequest.of(0, 10);
