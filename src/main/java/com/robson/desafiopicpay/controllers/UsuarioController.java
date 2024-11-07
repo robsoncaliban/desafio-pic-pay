@@ -36,9 +36,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Tag(name = "Gestão de Usuários")
 @RestController
 @RequestMapping(value = "/api/usuarios")
-@Tag(name = "pic-pay-api")
 public class UsuarioController {
     
     private UsuarioService service;
@@ -48,7 +48,7 @@ public class UsuarioController {
     }
     
     @GetMapping
-    @Operation(summary = "Busca todos os usuarios cadastrados", method = "GET")
+    @Operation(summary = "Busca todos os usuários cadastrados", method = "GET")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
         @ApiResponse(responseCode = "500", description = "Erro interno")
@@ -67,10 +67,10 @@ public class UsuarioController {
     }
 
     @GetMapping(value = "/{id}")
-    @Operation(summary = "Busca um usuario pelo id", method = "POST")
+    @Operation(summary = "Busca um usuário pelo id", method = "POST")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-        @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
+        @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     public ResponseEntity<UsuarioGetByIdResponseDTO> findById(@PathVariable Long id){
         Usuario usuario = service.findById(id);
@@ -92,10 +92,10 @@ public class UsuarioController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Cria um usuario", method = "POST")
+    @Operation(summary = "Cria um usuário", method = "POST")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200",description = "Usuario adicionado"),
-        @ApiResponse(responseCode = "400",description = "Parametros inválidos"),
+        @ApiResponse(responseCode = "200",description = "Usuário adicionado"),
+        @ApiResponse(responseCode = "400",description = "Parâmetros inválidos"),
         @ApiResponse(responseCode = "409",description = "Conflito de credenciais"),
     })
     public ResponseEntity<UsuarioResponseDTO> insert(@RequestBody @Valid UsuarioRequestDTO usuario) {
@@ -105,10 +105,10 @@ public class UsuarioController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @Operation(summary = "Atualiza nome e/ou senha de um usuario buscado por id")
+    @Operation(summary = "Atualiza nome e/ou senha de um usuário buscado por id")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario atualizado"),
-        @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
+        @ApiResponse(responseCode = "200", description = "Usuário atualizado"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
         @ApiResponse(responseCode = "400", description = "Parametros inválidos")
     })
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
