@@ -47,10 +47,20 @@ public class TransacaoController {
         return ResponseEntity.ok().body(transacaoResponse);
     }
 
+    @Operation(summary = "Busca transações recebidas pelo ID do usuário", method = "GET")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Busca efetuada com sucesso", 
+         content = {@Content(mediaType = "application/json",
+                        schema = @Schema(implementation = TransacaoRecebidaResponseDTO.class))}),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+         content = {@Content(mediaType = "application/json",
+         schema = @Schema(implementation = StandardError.class))}),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
     @GetMapping(value = "/recebidas/{idUsuario}")
     public ResponseEntity<List<TransacaoRecebidaResponseDTO>> findTransacoesRecebidasByUserId(
         @PathVariable Long idUsuario,
-        @PageableDefault(page = 0, size = 5) Pageable page){
+        @ParameterObject @PageableDefault(page = 0, size = 5) Pageable page){
 
         List<Transacao> list = service.findTransacoesRecebidasByUserId(idUsuario, page).getContent();
         List<TransacaoRecebidaResponseDTO> responseDTOs = new ArrayList<>();
