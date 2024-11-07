@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.robson.desafiopicpay.services.exceptions.AuthenticationFailureException;
@@ -26,6 +27,7 @@ public class UsuarioExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     private ResponseEntity<StandardError> usuarioNaoEncontradoHandler(UserNotFoundException e, HttpServletRequest request){
         String erro = "Not found";
         Integer status = HttpStatus.NOT_FOUND.value();
@@ -34,6 +36,7 @@ public class UsuarioExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationFailureException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<StandardError> erroAutenticacao(AuthenticationFailureException e, HttpServletRequest request){
         String erro = "Bad request";
         Integer status = HttpStatus.BAD_REQUEST.value();

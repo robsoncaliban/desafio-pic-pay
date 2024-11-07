@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.robson.desafiopicpay.services.exceptions.TransactionForbiddenException;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class TransacaoExceptionHandler extends ResponseEntityExceptionHandler{
     
     @ExceptionHandler(TransactionNotCompletedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<StandardError> transactionNotCompletd(TransactionNotCompletedException e, HttpServletRequest request){
         String erro = "Bad request";
         Integer status = HttpStatus.BAD_REQUEST.value();
@@ -25,6 +27,7 @@ public class TransacaoExceptionHandler extends ResponseEntityExceptionHandler{
     }
 
     @ExceptionHandler(TransactionForbiddenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<StandardError> transactionForbiddenException(TransactionForbiddenException e, HttpServletRequest request){
         String erro = "Bad request";
         Integer status = HttpStatus.BAD_REQUEST.value();
