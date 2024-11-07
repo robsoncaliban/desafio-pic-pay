@@ -24,8 +24,9 @@ import com.robson.desafiopicpay.services.TransacaoService;
 
 import jakarta.validation.Valid;
 
+@Tag(name = "Gestão de Transações")
 @RestController
-@RequestMapping(value = "/transacoes")
+@RequestMapping(value = "/api/transacoes")
 public class TransacaoController {
     private TransacaoService service;
 
