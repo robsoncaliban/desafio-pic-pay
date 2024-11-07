@@ -34,7 +34,14 @@ public class TransacaoController {
         this.service = service;
     }
 
-    @PostMapping
+    @Operation(summary = "Efetua uma transação", method = "POST")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Transação efetuada com sucesso",
+         content = @Content(mediaType = "application/json", 
+         schema = @Schema(implementation = TransacaoInsertResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransacaoInsertResponseDTO> efetuarTransacao(@RequestBody @Valid TransacaoRequestDTO transacaoDTO){
         TransacaoInsertResponseDTO transacaoResponse = service.efetuarTransacao(transacaoDTO);
         return ResponseEntity.ok().body(transacaoResponse);
