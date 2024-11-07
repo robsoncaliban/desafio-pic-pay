@@ -3,6 +3,7 @@ package com.robson.desafiopicpay.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.robson.desafiopicpay.controllers.exceptions.StandardError;
 import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
 import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
 import com.robson.desafiopicpay.dtos.response.UsuarioGetByIdResponseDTO;
@@ -11,6 +12,8 @@ import com.robson.desafiopicpay.entities.Usuario;
 import com.robson.desafiopicpay.services.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,7 +54,9 @@ public class UsuarioController {
     @Operation(summary = "Busca todos os usuários cadastrados", method = "GET")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Erro interno")
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", 
+         content = @Content(mediaType = "application/json", 
+         schema = @Schema(implementation = StandardError.class)))
     })
     public ResponseEntity<List<UsuarioResponseDTO>> findAll(
         @ParameterObject @PageableDefault(page = 0, size = 10) Pageable page) {
@@ -96,7 +101,9 @@ public class UsuarioController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",description = "Usuário adicionado"),
         @ApiResponse(responseCode = "400",description = "Parâmetros inválidos"),
-        @ApiResponse(responseCode = "409",description = "Conflito de credenciais"),
+        @ApiResponse(responseCode = "409",description = "Conflito de credenciais",
+         content = @Content(mediaType = "application/json", 
+         schema = @Schema(implementation = StandardError.class)))
     })
     public ResponseEntity<UsuarioResponseDTO> insert(@RequestBody @Valid UsuarioRequestDTO usuario) {
         Usuario usuarioComum = service.insert(usuario); 
@@ -105,7 +112,7 @@ public class UsuarioController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @Operation(summary = "Atualiza nome e/ou senha de um usuário buscado por id")
+    @Operation(summary = "Atualiza nome e/ou senha de um usuário buscado por id", method = "PATCH")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuário atualizado"),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
