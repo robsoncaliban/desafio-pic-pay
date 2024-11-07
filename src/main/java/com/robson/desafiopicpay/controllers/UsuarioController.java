@@ -95,7 +95,7 @@ public class UsuarioController {
     @Operation(summary = "Cria um usuario", method = "POST")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",description = "Usuario adicionado"),
-        @ApiResponse(responseCode = "400",description = "Parametros invalidos"),
+        @ApiResponse(responseCode = "400",description = "Parametros inválidos"),
         @ApiResponse(responseCode = "409",description = "Conflito de credenciais"),
     })
     public ResponseEntity<UsuarioResponseDTO> insert(@RequestBody @Valid UsuarioRequestDTO usuario) {
@@ -105,7 +105,13 @@ public class UsuarioController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PatchMapping(value = "/{id}")
+    @Operation(summary = "Atualiza nome e/ou senha de um usuario buscado por id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario atualizado"),
+        @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
+        @ApiResponse(responseCode = "400", description = "Parametros inválidos")
+    })
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsuarioResponseDTO> updateById(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO update){
         Usuario usuario = service.updateById(id, update);
         Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();

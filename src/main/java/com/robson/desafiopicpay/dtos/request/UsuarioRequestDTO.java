@@ -5,6 +5,7 @@ import com.robson.desafiopicpay.validation.constraint.CpfCnpj;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public record UsuarioRequestDTO(
@@ -16,6 +17,7 @@ public record UsuarioRequestDTO(
     @Size(min = 6, max = 6,  message = "Deve ter mais de 6 carateres")
     String senha,
     @NotBlank(message = "Insira um saldo inicial")
+    @PositiveOrZero(message = "Insira um valor positivo")
     String saldo, 
     @NotBlank(message = "Insira um cpf ou cnpj") 
     @CpfCnpj
