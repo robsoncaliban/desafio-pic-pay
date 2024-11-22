@@ -96,15 +96,15 @@ public class UsuarioController {
         return new ArrayList<>(Arrays.asList(transacoesEnviadas,transacoesRecebidas));
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Cria um usuário", method = "POST")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",description = "Usuário adicionado"),
         @ApiResponse(responseCode = "400",description = "Parâmetros inválidos"),
         @ApiResponse(responseCode = "409",description = "Conflito de credenciais",
-         content = @Content(mediaType = "application/json", 
-         schema = @Schema(implementation = StandardError.class)))
+        content = @Content(mediaType = "application/json", 
+        schema = @Schema(implementation = StandardError.class)))
     })
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsuarioResponseDTO> insert(@RequestBody @Valid UsuarioRequestDTO usuario) {
         Usuario usuarioComum = service.insert(usuario); 
         Link link = linkTo(methodOn(UsuarioController.class).findById(usuarioComum.getId())).withSelfRel();
