@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:15
+    container_name: db-postgres-container
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: robsoncaliban
+      POSTGRES_PASSWORD: info@1234
+      POSTGRES_DB: pic-pay-database
+    volumes:
+      - pic_pay_postgres:/var/lib/postgresql/data
+
+volumes:
+  pic_pay_postgres:
