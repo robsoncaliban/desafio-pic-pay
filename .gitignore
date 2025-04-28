@@ -3,6 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+src/main/java/com/robson/desafiopicpay/TestConfig.java
+src/main/resources/application-security.properties
 
 ### STS ###
 .apt_generated
