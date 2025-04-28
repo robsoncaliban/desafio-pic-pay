@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.robson.desafiopicpay.services.exceptions.TransactionForbiddenException;
 import com.robson.desafiopicpay.services.exceptions.TransactionNotCompletedException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,15 +19,6 @@ public class TransacaoExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(TransactionNotCompletedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<StandardError> transactionNotCompletd(TransactionNotCompletedException e, HttpServletRequest request){
-        String erro = "Bad request";
-        Integer status = HttpStatus.BAD_REQUEST.value();
-        StandardError sError = new StandardError(Instant.now(), status, erro, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(sError);
-    }
-
-    @ExceptionHandler(TransactionForbiddenException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<StandardError> transactionForbiddenException(TransactionForbiddenException e, HttpServletRequest request){
         String erro = "Bad request";
         Integer status = HttpStatus.BAD_REQUEST.value();
         StandardError sError = new StandardError(Instant.now(), status, erro, e.getMessage(), request.getRequestURI());
