@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.robson.desafiopicpay.services.exceptions.AuthenticationFailureException;
 import com.robson.desafiopicpay.services.exceptions.DuplicateDataException;
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
@@ -35,12 +34,4 @@ public class UsuarioExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).body(sError);
     }
 
-    @ExceptionHandler(AuthenticationFailureException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<StandardError> erroAutenticacao(AuthenticationFailureException e, HttpServletRequest request){
-        String erro = "Bad request";
-        Integer status = HttpStatus.BAD_REQUEST.value();
-        StandardError sError = new StandardError(Instant.now(), status, erro, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(sError);
-    }
 }

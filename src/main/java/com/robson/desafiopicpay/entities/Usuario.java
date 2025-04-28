@@ -2,25 +2,29 @@ package com.robson.desafiopicpay.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
 import com.robson.desafiopicpay.entities.enums.TipoUsuario;
 import com.robson.desafiopicpay.validation.constraint.CpfCnpj;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class Usuario implements Serializable{
@@ -28,6 +32,7 @@ public class Usuario implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuario_id")
     private Long id;
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipo;
@@ -38,19 +43,24 @@ public class Usuario implements Serializable{
     @NotBlank
     private String senha;
     @NotBlank
-    @Size(min = 5, message = "Deve ter no minimo 5 caracteres")
-    @Pattern(regexp = "^(?!.*\\d)(?!.*[!@#$%^&*()_+={}\\[\\]|\\\\:;\"'<>,.?/~`])[A-Za-zÀ-ÿ]+ [A-Za-zÀ-ÿ ']+$")
     private String nomeCompleto;
 
-    @OneToOne
-    @Cascade(CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Conta conta;
 
     @CpfCnpj
     private String cpfOuCnpj;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "usuario_role",
+        joinColumns = {@JoinColumn(name="usuario_id")},
+        inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    private Set<Role> authorities;
 
     public Usuario(){
+        this.authorities = new HashSet<>();
     }
     public Usuario(UsuarioRequestDTO usuarioDto) {
         this.email = usuarioDto.email();
@@ -58,6 +68,17 @@ public class Usuario implements Serializable{
         this.nomeCompleto = usuarioDto.nomeCompleto();
         this.cpfOuCnpj = usuarioDto.cpfCnpj();
         this.conta = new Conta(this, new BigDecimal(usuarioDto.saldo()));
+        this.authorities = new HashSet<>();
+    }
+
+    public Set<Role> getAuthorities() {
+        return authorities;
+    }
+    public void setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
+    }
+    public void addAuthority(Role authority) {
+        this.authorities.add(authority);
     }
 
     public Conta getConta() {
@@ -97,9 +118,6 @@ public class Usuario implements Serializable{
 
     public static long getSerialversionuid() {
         return serialVersionUID;
-    }
-    public void setId(Long id) {
-        this.id = id;
     }
     public TipoUsuario getTipo() {
         return tipo;

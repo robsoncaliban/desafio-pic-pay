@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.robson.desafiopicpay.entities.enums.StatusTransacao;
-import com.robson.desafiopicpay.entities.enums.TipoUsuario;
-import com.robson.desafiopicpay.services.exceptions.TransactionForbiddenException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,8 +43,6 @@ public class Conta implements Serializable {
     }
 
     public Transacao efetuarTransacao(BigDecimal valor, Conta destino){
-        if(dono.getTipo().equals(TipoUsuario.USUARIO_LOGISTA)) throw new TransactionForbiddenException(dono.getId());
-        
         setSaldo(getSaldo().subtract(valor));
         destino.setSaldo(destino.getSaldo().add(valor));
         Transacao transacaoConcluida = new Transacao(valor, this, destino, StatusTransacao.CONCLUIDA);

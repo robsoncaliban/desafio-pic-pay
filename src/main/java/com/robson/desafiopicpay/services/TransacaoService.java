@@ -60,7 +60,6 @@ public class TransacaoService {
     }
 
     private void validarTransacao(TransacaoRequestDTO transacao){
-        usuarioService.autenticarUsuario(transacao.idOrigem(), transacao.senhaOrigem());
         BigDecimal valor = new BigDecimal(transacao.valor());
         Conta conta = usuarioService.findById(transacao.idOrigem()).getConta();
         if(valor.compareTo(BigDecimal.ZERO) <= 0) throw new TransactionNotCompletedException("Valor igual ou menor que zero");
