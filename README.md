@@ -64,6 +64,5 @@ O projeto possui três entidades principais:
 ---
 
 ## 🔮 Melhorias Futuras
-- Autenticação completa para permitir login/logout e controle de sessões
 - Testes unitários e de integração para garantir a qualidade do código
 - Implementação de um sistema de notificações mais robusto
