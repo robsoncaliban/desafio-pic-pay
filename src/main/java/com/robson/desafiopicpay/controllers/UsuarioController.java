@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robson.desafiopicpay.controllers.exceptions.StandardError;
-import com.robson.desafiopicpay.dtos.request.UsuarioRequestDTO;
-import com.robson.desafiopicpay.dtos.request.UsuarioUpdateRequestDTO;
 import com.robson.desafiopicpay.dtos.response.UsuarioGetByIdResponseDTO;
 import com.robson.desafiopicpay.dtos.response.UsuarioResponseDTO;
 import com.robson.desafiopicpay.entities.Usuario;
@@ -17,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,20 +25,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Tag(name = "Gestão de Usuários")
 @RestController
-@RequestMapping(value = "/api/usuarios")
+@RequestMapping(value = "/usuarios")
 public class UsuarioController {
     
     private UsuarioService service;
@@ -96,32 +89,4 @@ public class UsuarioController {
         return new ArrayList<>(Arrays.asList(transacoesEnviadas,transacoesRecebidas));
     }
 
-    @Operation(summary = "Cria um usuário", method = "POST")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200",description = "Usuário adicionado"),
-        @ApiResponse(responseCode = "400",description = "Parâmetros inválidos"),
-        @ApiResponse(responseCode = "409",description = "Conflito de credenciais",
-        content = @Content(mediaType = "application/json", 
-        schema = @Schema(implementation = StandardError.class)))
-    })
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UsuarioResponseDTO> insert(@RequestBody @Valid UsuarioRequestDTO usuario) {
-        Usuario usuarioComum = service.insert(usuario); 
-        Link link = linkTo(methodOn(UsuarioController.class).findById(usuarioComum.getId())).withSelfRel();
-        UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuarioComum, link);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @Operation(summary = "Atualiza nome e/ou senha de um usuário buscado por id", method = "PATCH")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuário atualizado"),
-        @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-        @ApiResponse(responseCode = "400", description = "Parametros inválidos")
-    })
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UsuarioResponseDTO> updateById(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO update){
-        Usuario usuario = service.updateById(id, update);
-        Link link = linkTo(methodOn(UsuarioController.class).findById(usuario.getId())).withSelfRel();
-        return ResponseEntity.ok().body(new UsuarioResponseDTO(usuario, link));
-    }  
 }

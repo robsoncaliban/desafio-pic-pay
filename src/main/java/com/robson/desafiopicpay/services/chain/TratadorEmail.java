@@ -7,7 +7,6 @@ import com.robson.desafiopicpay.services.UsuarioService;
 import com.robson.desafiopicpay.services.exceptions.DuplicateDataException;
 import com.robson.desafiopicpay.services.exceptions.UserNotFoundException;
 
-// @Component
 public class TratadorEmail extends TratadorCadastro {
 
     public TratadorEmail(UsuarioService usuarioService) {

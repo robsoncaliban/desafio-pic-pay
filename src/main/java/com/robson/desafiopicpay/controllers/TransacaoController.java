@@ -34,7 +34,7 @@ import jakarta.validation.Valid;
 
 @Tag(name = "Gestão de Transações")
 @RestController
-@RequestMapping(value = "/api/transacoes")
+@RequestMapping(value = "/transacoes")
 public class TransacaoController {
     private TransacaoService service;
 
