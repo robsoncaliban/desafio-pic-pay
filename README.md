@@ -40,7 +40,7 @@ O projeto possui três entidades principais:
 - **Java 17**
 - **Spring Boot**
 - **Spring Data JPA**
-- **Spring Security** (para criptografia de senha)
+- **Spring Security** (para criptografia de senha, autenticação e autorização)
 - **HATEOAS** (para facilitar a navegação)
 - **Swagger** (para documentação)
 - **PostgreSQL via Docker Compose**
